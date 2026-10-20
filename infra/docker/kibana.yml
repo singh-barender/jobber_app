@@ -1,0 +1,38 @@
+# Kibana settings that are not secret (mounted by compose.yaml).
+# The Elasticsearch address, login and encryption keys come from environment variables.
+# This file replaces the image default, so the default server settings are repeated.
+
+# Server
+server.name: kibana
+server.host: "0.0.0.0"
+server.port: 5601
+server.shutdownTimeout: 5s
+
+# Elasticsearch and stack monitoring
+elasticsearch.requestTimeout: 90000
+monitoring.ui.container.elasticsearch.enabled: true
+monitoring.ui.container.logstash.enabled: true
+
+# Fleet and the APM integration (for the APM lectures). Downloading the APM package
+# on first start needs internet access.
+xpack.fleet.enabled: true
+xpack.fleet.agents.enabled: true
+xpack.fleet.agentIdVerificationEnabled: false
+xpack.fleet.agents.elasticsearch.hosts: ["http://elasticsearch:9200"]
+
+xpack.fleet.packages:
+  - name: apm
+    version: latest
+
+xpack.fleet.agentPolicies:
+  - name: Agent policy 1
+    id: agent-policy-1
+    namespace: default
+    monitoring_enabled:
+      - logs
+      - metrics
+    package_policies:
+      - name: apm-1
+        id: default-apm
+        package:
+          name: apm
