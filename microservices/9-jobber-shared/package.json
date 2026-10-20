@@ -1,0 +1,60 @@
+{
+  "name": "@singh-barender/jobber-shared",
+  "version": "1.0.0",
+  "description": "Shared types, errors, logger and helpers used by every Jobber microservice",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "keywords": [
+    "jobber",
+    "microservices",
+    "shared",
+    "typescript"
+  ],
+  "author": "Barender Singh",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf build",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/singh-barender/jobber_app.git",
+    "directory": "microservices/9-jobber-shared"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "^9.5.1",
+    "cloudinary": "^2.11.0",
+    "express": "^5.3.0",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.11.2",
+    "winston": "^3.19.0",
+    "winston-elasticsearch": "^0.19.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.0.0",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.0"
+  }
+}
