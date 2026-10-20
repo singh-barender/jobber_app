@@ -1,0 +1,50 @@
+name: Publish shared package
+
+on:
+  push:
+    branches: [main]
+    paths: [microservices/9-jobber-shared/**]
+  pull_request:
+    branches: [main]
+    paths: [microservices/9-jobber-shared/**]
+
+defaults:
+  run:
+    working-directory: microservices/9-jobber-shared
+
+jobs:
+  # Runs on every push and PR touching this package: build, lint and format check only.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24.x"
+      - run: npm install
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run build
+
+  # Publishes only on an actual push to main (i.e. after a PR is merged), never on the PR
+  # itself - a plain "pull_request" trigger with packages:write would otherwise publish a
+  # new version just from opening a PR, before it is reviewed or merged.
+  publish:
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24.x"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@singh-barender"
+      - run: npm install
+      # npm publish runs prepublishOnly first (clean + build), same as a manual publish.
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
