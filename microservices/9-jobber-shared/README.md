@@ -10,6 +10,16 @@ This package lives inside the single `jobber_app` monorepo (not a separate repo)
 published from here directly — `npm publish` only looks at this folder's `package.json`
 and `files`, so it doesn't matter what else is in the repo around it.
 
+**Publishing happens automatically**: `.github/workflows/publish.yml` builds, lints and
+publishes on every push to `main` that touches this folder (using the repo's own
+`GITHUB_TOKEN`, not a personal token). A PR touching this folder only runs the build/lint
+check, never a publish — publishing fires once that PR is merged to `main`. Every change
+here therefore needs `package.json`'s `version` bumped before merging, or the publish step
+fails outright (GitHub Packages rejects re-publishing an existing version number):
+`npm version patch` (or `minor`/`major`) from this folder, which also commits the bump.
+
+Publish manually only when testing locally, outside CI:
+
 * Create a GitHub **personal access token** (Settings, Developer settings,
   Personal access tokens, Tokens with the `read:packages` and `write:packages`
   scopes. GitHub Packages does not support fine-grained PATs for the npm registry.
@@ -23,8 +33,8 @@ and `files`, so it doesn't matter what else is in the repo around it.
   The registry URL has no owner/org path segment — only the `@scope` prefix carries it.
 * `package.json`'s `name`, `author` and `repository` already point at this project; update
   them if you fork this package under a different account.
-* No GitHub Actions workflow is set up yet in this project — publish manually for now:
-  `cd microservices/9-jobber-shared && npm publish`.
+* `cd microservices/9-jobber-shared && npm publish` — same version-bump rule applies; a
+  manual publish of a version already live on the registry fails the same way CI's would.
 
 ## Build
 
